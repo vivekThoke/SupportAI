@@ -1,0 +1,6 @@
+@SupportAI_HostAddress = http://localhost:5032
+
+GET {{SupportAI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
