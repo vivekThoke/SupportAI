@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SupportAI.Domain\SupportAI.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Common\" />
+    <Folder Include="Tenants\" />
+  </ItemGroup>
+
 </Project>

@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SupportAI.Application\SupportAI.Application.csproj" />
+    <ProjectReference Include="..\SupportAI.Domain\SupportAI.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Identity\" />
+    <Folder Include="Services\" />
+    <Folder Include="Persistence\" />
+  </ItemGroup>
+
 </Project>

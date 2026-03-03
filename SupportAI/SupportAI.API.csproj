@@ -10,4 +10,14 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SupportAI.Application\SupportAI.Application.csproj" />
+    <ProjectReference Include="..\SupportAI.Infrastructure\SupportAI.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Middleware\" />
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
