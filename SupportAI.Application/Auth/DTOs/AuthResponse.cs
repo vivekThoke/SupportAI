@@ -9,5 +9,10 @@ namespace SupportAI.Application.Auth.DTOs
     public record AuthResponse
     {
         string Token = default!;
+
+        public AuthResponse(string token)
+        {
+            this.Token = token;
+        }
     }
 }
