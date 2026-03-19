@@ -1,4 +1,10 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SupportAI.Application.Auth.Commands;
 using SupportAI.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
+
+var key = Encoding.UTF8.GetBytes("SUPER_SECRET_KEY_123_AROUND_THE_WORLD_TRAVEL_WITH_ONE_PURPOSE_TO_MAKE_NEW_THINGS_THAT_MAKE_THIS_THINGS_COME_TRUE");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +15,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(RegisterTenantCommand).Assembly));
+
+
 builder.Services.AddInfrastructure(
     builder.Configuration.GetConnectionString("DefaultConnection"));
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+    };
+});
+
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

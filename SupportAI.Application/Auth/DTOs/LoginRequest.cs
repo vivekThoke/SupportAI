@@ -6,9 +6,5 @@ using System.Threading.Tasks;
 
 namespace SupportAI.Application.Auth.DTOs
 {
-    public record LoginRequest
-    {
-        string Email = default!;
-        string Password = default!;
-    }
+    public record LoginRequest(string Email, String Password);
 }

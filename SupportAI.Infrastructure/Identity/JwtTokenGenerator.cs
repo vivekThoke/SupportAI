@@ -16,7 +16,7 @@ namespace SupportAI.Infrastructure.Identity
 
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        private readonly string _secretKey = "SUPER_SECRET_KEY_123";
+        private readonly string _secretKey = "SUPER_SECRET_KEY_123_AROUND_THE_WORLD_TRAVEL_WITH_ONE_PURPOSE_TO_MAKE_NEW_THINGS_THAT_MAKE_THIS_THINGS_COME_TRUE";
 
         public string GenerateToken(User user)
         {

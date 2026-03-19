@@ -42,10 +42,11 @@ namespace SupportAI.Application.Auth.Handler
             var password = passwordHasher.Hash(request.Password);
 
             var user = new User(
-                                Guid.NewGuid(),
+                                tenant.Id,
                                 request.Email,
                                 password,
-                                UserRoles.Admin);
+                                UserRoles.Admin
+                                );
 
             await userRepository.AddAsync(user);
 
