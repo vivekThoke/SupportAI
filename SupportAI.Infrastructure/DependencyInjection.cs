@@ -24,6 +24,8 @@ namespace SupportAI.Infrastructure
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IFileStorageService, FileStorageServiceRepository>();
 
             return services;
         }

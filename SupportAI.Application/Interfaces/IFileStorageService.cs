@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SupportAI.Domain.Entities;
 
 namespace SupportAI.Application.Interfaces
 {
-    public interface ITenantRepository
+    public interface IFileStorageService
     {
-        Task AddAsync(Tenant tenant);
-        Task<Guid?> GetTenantIdAsync(string tenantName);
+        Task<string> SaveAsync(Stream fileStream, string fileName);
     }
 }

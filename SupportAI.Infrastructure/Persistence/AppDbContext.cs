@@ -12,6 +12,7 @@ namespace SupportAI.Infrastructure.Persistence
     {
         public DbSet<Tenant> Tenants => Set<Tenant>();
         public DbSet<User> Users => Set<User>();
+        public DbSet<Document> Documents => Set<Document>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -43,6 +44,20 @@ namespace SupportAI.Infrastructure.Persistence
                 entity.HasOne<Tenant>()
                     .WithMany(t => t.Users)
                     .HasForeignKey(u => u.TenantId);
+            });
+
+            modelBuilder.Entity<Document>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.FileName)
+                    .IsRequired();
+
+                entity.Property(x => x.FilePath)
+                    .IsRequired();
+
+                entity.Property(x => x.Status)
+                    .IsRequired();
             });
         }
 
