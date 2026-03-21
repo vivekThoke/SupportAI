@@ -25,6 +25,7 @@ namespace SupportAI.Infrastructure.Processing
                 return text;
             }
 
+            // fallback for text files
             return File.ReadAllText(filePath);
         }
     }
