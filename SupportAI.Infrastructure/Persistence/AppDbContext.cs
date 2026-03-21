@@ -13,6 +13,7 @@ namespace SupportAI.Infrastructure.Persistence
         public DbSet<Tenant> Tenants => Set<Tenant>();
         public DbSet<User> Users => Set<User>();
         public DbSet<Document> Documents => Set<Document>();
+        public DbSet<DocumentChunk> DocumentChunks => Set<DocumentChunk>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -57,6 +58,17 @@ namespace SupportAI.Infrastructure.Persistence
                     .IsRequired();
 
                 entity.Property(x => x.Status)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<DocumentChunk>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Content)
+                    .IsRequired();
+
+                entity.Property(x => x.VectorId)
                     .IsRequired();
             });
         }
