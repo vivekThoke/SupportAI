@@ -40,9 +40,8 @@ namespace SupportAI.Application.Documents.Handler
                                 filePath);
 
             // To-Do: For now making document has mark ready.
-            document.MarkReady();
+            document.MarkProcessing();
            
-
             // Save to DB
             await _documentRepository.AddAsync(document);
 

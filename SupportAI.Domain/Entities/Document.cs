@@ -25,5 +25,6 @@ namespace SupportAI.Domain.Entities
 
         public void MarkReady() => Status = "Ready";
         public void MarkFailed() => Status = "Failed";
+        public void MarkProcessing() => Status = "Processing";
     }
 }

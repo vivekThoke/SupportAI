@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SupportAI.Application.Interfaces;
 using SupportAI.Infrastructure.Identity;
 using SupportAI.Infrastructure.Persistence;
+using SupportAI.Infrastructure.Processing;
 using SupportAI.Infrastructure.Repositories;
 using SupportAI.Infrastructure.Security;
 
@@ -26,6 +27,11 @@ namespace SupportAI.Infrastructure
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IDocumentRepository, DocumentRepository>();
             services.AddScoped<IFileStorageService, FileStorageServiceRepository>();
+            services.AddScoped<DocumentProcessor>();
+            services.AddScoped<TextExtractor>();
+            services.AddScoped<TextChunker>();
+            services.AddScoped<IDocumentChunkRepository, DocumentChunkRepository>();
+            services.AddHostedService<DocumentProcessingService>();
 
             return services;
         }
