@@ -73,3 +73,17 @@ TestResults/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+## ============================================================================
+## DATA & DOCUMENTS
+## ============================================================================
+# Documents and Data files
+*.pdf
+*.txt
+*.csv
+*.xlsx
+*.xls
+*.json
+# Exclude appsettings from the general json ignore
+!appsettings.json
+!appsettings.*.json

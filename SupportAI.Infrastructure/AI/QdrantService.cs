@@ -28,7 +28,7 @@ namespace SupportAI.Infrastructure.AI
 
             var payload = new
             {
-                Points = new[]
+                points = new[]
                 {
                     new
                     {
@@ -44,9 +44,34 @@ namespace SupportAI.Infrastructure.AI
                 }
             };
 
-            await _httpClient.PutAsJsonAsync("http://localhost:6333/collections/documents/points", payload);
+            var response = await _httpClient.PutAsJsonAsync("http://localhost:6333/collections/documents/points", payload);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Qdrant error: {error}");
+            }
 
             return id;
+        }
+
+        public async Task EnsureCollectionExists()
+        {
+            var response = await _httpClient.GetAsync("http://localhost:6333/collections/documents");
+
+            if (response.IsSuccessStatusCode)
+                return;
+
+            var payload =new
+            {
+                vector = new
+                {
+                    size = 786,
+                    distance = "Cosine"
+                }
+            };
+
+            await _httpClient.PostAsJsonAsync("http://localhost:6333/collections/documents", payload);
         }
     }
 }

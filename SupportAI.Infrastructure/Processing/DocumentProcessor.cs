@@ -63,6 +63,8 @@ namespace SupportAI.Infrastructure.Processing
                     if (embedding == null || embedding.Count == 0)
                         throw new Exception("Embedding Failed");
 
+                    await _vectorDatabase.EnsureCollectionExists();
+
                     var vectorId = await _vectorDatabase.UpsertAsync(
                         embedding,
                         doc.TenantId,

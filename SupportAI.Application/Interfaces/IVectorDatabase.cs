@@ -14,5 +14,7 @@ namespace SupportAI.Application.Interfaces
             Guid documentId,
             string content
             );
+
+        Task EnsureCollectionExists();
     }
 }
