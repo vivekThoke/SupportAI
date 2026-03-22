@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SupportAI.Application.Interfaces;
+using SupportAI.Infrastructure.AI;
 using SupportAI.Infrastructure.Identity;
 using SupportAI.Infrastructure.Persistence;
 using SupportAI.Infrastructure.Processing;
@@ -18,6 +19,8 @@ namespace SupportAI.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
+            services.AddHttpClient();
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -32,6 +35,8 @@ namespace SupportAI.Infrastructure
             services.AddScoped<TextChunker>();
             services.AddScoped<IDocumentChunkRepository, DocumentChunkRepository>();
             services.AddHostedService<DocumentProcessingService>();
+            services.AddScoped<IEmbeddingService, GeminiEmbeddingService>();
+            services.AddScoped<IVectorDatabase, QdrantService>();
 
             return services;
         }
