@@ -15,14 +15,16 @@ namespace SupportAI.Application.Documents.Handler
         private readonly IDocumentRepository _documentRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly ITenantRepository _tenantRepository;
+        private readonly IBackgroundJobQueue _queue;
 
-        public UploadDocumentHandler(IDocumentRepository documentRepository, IFileStorageService fileStorageService, ITenantRepository tenantRepository)
+        public UploadDocumentHandler(IDocumentRepository documentRepository, IFileStorageService fileStorageService, ITenantRepository tenantRepository, IBackgroundJobQueue queue)
         {
             _documentRepository = documentRepository;
             _fileStorageService = fileStorageService;
             _tenantRepository = tenantRepository;
+            _queue = queue;
         }
-
+            
         public async Task<Guid> Handle(
             UploadDocumentCommand command, 
             CancellationToken token)
@@ -44,6 +46,8 @@ namespace SupportAI.Application.Documents.Handler
            
             // Save to DB
             await _documentRepository.AddAsync(document);
+
+            _queue.Enqueue(document.Id);
 
             return document.Id;
         }

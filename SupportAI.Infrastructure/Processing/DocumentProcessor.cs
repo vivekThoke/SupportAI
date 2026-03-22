@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using SupportAI.Application.Interfaces;
 using SupportAI.Domain.Entities;
@@ -17,56 +18,86 @@ namespace SupportAI.Infrastructure.Processing
         private readonly TextChunker _textChunker;
         private readonly IEmbeddingService _embeddingService;
         private readonly IVectorDatabase _vectorDatabase;
+        private readonly IBackgroundJobQueue _backgroundJobQueue;
 
-        public DocumentProcessor(AppDbContext appDbContext, TextExtractor textExtractor, TextChunker textChunker, IEmbeddingService embeddingService, IVectorDatabase vectorDatabase)
+        public DocumentProcessor(AppDbContext appDbContext, TextExtractor textExtractor, TextChunker textChunker, IEmbeddingService embeddingService, IVectorDatabase vectorDatabase, IBackgroundJobQueue backgroundJobQueue)
         {
             _appDbContext = appDbContext;
             _textChunker = textChunker;
             _textExtractor = textExtractor;
             _embeddingService = embeddingService;
             _vectorDatabase = vectorDatabase;
+            _backgroundJobQueue = backgroundJobQueue;
         }
 
-        public async Task ProcessAsync()
+        public async Task ProcessSingleAsync(Guid documentId)
         {
-            var documents = await _appDbContext.Documents
-                        .Where(x => x.Status == "Processing")
-                        .ToListAsync();
+            var doc = await _appDbContext.Documents
+                                    .FirstOrDefaultAsync(x => x.Id == documentId);
 
-            foreach(var doc in documents)
+            if (doc == null) return;
+
+            if (doc.Status == "Ready") return;
+
+            try
             {
-                try
+                if (!File.Exists(doc.FilePath))
+                    throw new Exception("File not found");
+
+                var text = _textExtractor.Extract(doc.FilePath);
+
+                if (string.IsNullOrEmpty(text))
+                    throw new Exception("Empty document content");
+
+                var chunks = _textChunker.Chunk(text);
+
+                var chunkEntities = new List<DocumentChunk>();
+
+                foreach (var chunk in chunks)
                 {
-                    var text = _textExtractor.Extract(doc.FilePath);
-                    var chunks = _textChunker.Chunk(text);
+                    if (string.IsNullOrEmpty(chunk))
+                        continue;
 
-                    var embeddings = await _embeddingService.GenerateEmbeddingAsync(chunks);
+                    var embedding = await _embeddingService.GenerateEmbeddingAsync(chunks);
 
-                     var vectorId = await _vectorDatabase.UpsertAsync(
-                         embeddings, 
-                         doc.TenantId, 
-                         doc.Id, 
-                         chunks.ToString()
-                     );
+                    if (embedding == null || embedding.Count == 0)
+                        throw new Exception("Embedding Failed");
 
-                    var chunkEntities = chunks.Select(c =>
-                            new DocumentChunk(
-                                doc.TenantId,
-                                doc.Id,
-                                c,
-                                vectorId
-                                )).ToList();
+                    var vectorId = await _vectorDatabase.UpsertAsync(
+                        embedding,
+                        doc.TenantId,
+                        doc.Id,
+                        chunk
+                    );
 
-                    await _appDbContext.DocumentChunks.AddRangeAsync(chunkEntities);
-
-                    doc.MarkReady();
-
-                    await _appDbContext.SaveChangesAsync();
+                    chunkEntities.Add(new DocumentChunk(
+                        doc.TenantId,
+                        doc.Id,
+                        chunk,
+                        vectorId
+                    ));
                 }
-                catch
+
+                if (!chunkEntities.Any())
+                    throw new Exception("No valid chunk generated");
+
+                await _appDbContext.DocumentChunks.AddRangeAsync(chunkEntities);
+
+                doc.MarkReady();
+
+                await _appDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                doc.MarkFailed(ex.Message);
+
+                await _appDbContext.SaveChangesAsync();
+
+                //retry logic
+                if (doc.CanRetry())
                 {
-                    doc.MarkFailed();
-                    await _appDbContext.SaveChangesAsync();
+                    await Task.Delay(2000);
+                    _backgroundJobQueue.Enqueue(doc.Id);
                 }
             }
         }
