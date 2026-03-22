@@ -6,29 +6,39 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualBasic;
+using SupportAI.Application.Interfaces;
 
 namespace SupportAI.Infrastructure.Processing
 {
     public class DocumentProcessingService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IBackgroundJobQueue _backgroundJobQueue;
 
-        public DocumentProcessingService(IServiceProvider serviceProvider)
+        public DocumentProcessingService(IServiceProvider serviceProvider, IBackgroundJobQueue backgroundJobQueue)
         {
             _serviceProvider = serviceProvider;
+            _backgroundJobQueue = backgroundJobQueue;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                using var scope = _serviceProvider.CreateScope();
+                var documentId = await _backgroundJobQueue.DequeueAsync(stoppingToken);
 
-                var processor = scope.ServiceProvider.GetRequiredService<DocumentProcessor>();
+                try
+                {
+                    using var scope = _serviceProvider.CreateScope();
 
-                await processor.ProcessAsync();
+                    var processor = scope.ServiceProvider.GetRequiredService<DocumentProcessor>();
 
-                await Task.Delay(500, stoppingToken);
+                    await processor.ProcessSingleAsync(documentId);
+                }
+                catch (Exception ex)
+                {
+                    
+                }
             }
         }
     }

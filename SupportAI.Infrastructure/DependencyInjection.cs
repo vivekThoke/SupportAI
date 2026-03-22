@@ -10,6 +10,7 @@ using SupportAI.Infrastructure.AI;
 using SupportAI.Infrastructure.Identity;
 using SupportAI.Infrastructure.Persistence;
 using SupportAI.Infrastructure.Processing;
+using SupportAI.Infrastructure.Queue;
 using SupportAI.Infrastructure.Repositories;
 using SupportAI.Infrastructure.Security;
 
@@ -20,6 +21,7 @@ namespace SupportAI.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
             services.AddHttpClient();
+            services.AddSingleton<IBackgroundJobQueue, BackgroundJobQueue>();
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -37,6 +39,8 @@ namespace SupportAI.Infrastructure
             services.AddHostedService<DocumentProcessingService>();
             services.AddScoped<IEmbeddingService, GeminiEmbeddingService>();
             services.AddScoped<IVectorDatabase, QdrantService>();
+
+
 
             return services;
         }
