@@ -59,6 +59,14 @@ namespace SupportAI.Infrastructure.Persistence
 
                 entity.Property(x => x.Status)
                     .IsRequired();
+
+                entity.Property(x => x.RetryCount);
+
+                entity.Property(x => x.ErrorMessage);
+
+                entity.Property(x => x.LastProcessedAt)
+                    .IsRequired();
+                    
             });
 
             modelBuilder.Entity<DocumentChunk>(entity =>

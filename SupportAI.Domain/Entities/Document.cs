@@ -13,6 +13,9 @@ namespace SupportAI.Domain.Entities
         public string FileName { get; private set; }
         public string FilePath { get; private set; }
         public string Status { get; private set; }
+        public int RetryCount { get; private set; }
+        public string? ErrorMessage { get; private set; }
+        public DateTime? LastProcessedAt { get; private set; }
 
         private Document() { }
 
@@ -23,8 +26,26 @@ namespace SupportAI.Domain.Entities
             FilePath = filePath;
         }
 
-        public void MarkReady() => Status = "Ready";
-        public void MarkFailed() => Status = "Failed";
-        public void MarkProcessing() => Status = "Processing";
+        public void MarkReady()
+        {
+            Status = "Ready";
+            ErrorMessage = null;
+            LastProcessedAt = DateTime.UtcNow;
+        }
+        public void MarkFailed(string error)
+        {
+            Status = "Failed";
+            ErrorMessage = error;
+            RetryCount++;
+            LastProcessedAt = DateTime.UtcNow;
+        }
+        public void MarkProcessing()
+        {
+            Status = "Processing";
+            ErrorMessage = null;
+            LastProcessedAt = DateTime.UtcNow;
+        }
+
+        public bool CanRetry() => RetryCount < 3;
     }
 }
