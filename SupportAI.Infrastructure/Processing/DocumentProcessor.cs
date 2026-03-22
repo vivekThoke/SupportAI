@@ -72,6 +72,13 @@ namespace SupportAI.Infrastructure.Processing
                         chunk
                     );
 
+                    //var vectorId = await _vectorDatabase.UpsertAsync(
+                    //        Enumerable.Repeat(0.5f, 768).ToList(),
+                    //        Guid.NewGuid(),
+                    //        Guid.NewGuid(),
+                    //        "test content"
+                    //);
+
                     chunkEntities.Add(new DocumentChunk(
                         doc.TenantId,
                         doc.Id,

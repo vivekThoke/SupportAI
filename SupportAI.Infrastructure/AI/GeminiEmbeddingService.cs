@@ -14,9 +14,17 @@ namespace SupportAI.Infrastructure.AI
         {
             var random = new Random();
 
-            return Enumerable.Range(0, 786)
-                .Select(_ => (float)random.NextDouble())
-                .ToList();
+            return Enumerable.Range(0, 768)
+                             .Select(_ => {
+                            // 1. Generate 0.0 to 1.0
+                            // 2. Multiply by 2.0 (Range: 0.0 to 2.0)
+                            // 3. Subtract 1.0 (Range: -1.0 to 1.0)
+                            double shiftedValue = (random.NextDouble() * 2.0) - 1.0;
+
+                            // 4. Round to 3 decimal places
+                            return (float)Math.Round(shiftedValue, 3);
+                        })
+                        .ToList();
         }
     }
 }

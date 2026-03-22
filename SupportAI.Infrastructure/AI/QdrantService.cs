@@ -44,7 +44,7 @@ namespace SupportAI.Infrastructure.AI
                 }
             };
 
-            var response = await _httpClient.PutAsJsonAsync("http://localhost:6333/collections/documents/points", payload);
+            var response = await _httpClient.PutAsJsonAsync("http://localhost:6333/collections/documents/points?wait=true", payload);
 
             if (!response.IsSuccessStatusCode)
             {
