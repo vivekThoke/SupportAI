@@ -9,5 +9,7 @@ namespace SupportAI.Application.Interfaces
     public interface IEmbeddingService
     {
         Task<List<float>> GenerateEmbeddingAsync(List<string> text);
+
+        Task<List<float>> GenerateEmbeddingAsync(string text);
     }
 }

@@ -37,7 +37,7 @@ namespace SupportAI.Infrastructure
             services.AddScoped<TextChunker>();
             services.AddScoped<IDocumentChunkRepository, DocumentChunkRepository>();
             services.AddHostedService<DocumentProcessingService>();
-            services.AddScoped<IEmbeddingService, GeminiEmbeddingService>();
+            services.AddHttpClient<IEmbeddingService, GeminiEmbeddingService>();
             services.AddScoped<IVectorDatabase, QdrantService>();
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,7 +59,12 @@ namespace SupportAI.Infrastructure.Processing
                     if (string.IsNullOrEmpty(chunk))
                         continue;
 
-                    var embedding = await _embeddingService.GenerateEmbeddingAsync(chunks);
+                    await Task.Delay(100);
+
+                    //var embedding = await _embeddingService.GenerateEmbeddingAsync(chunk);
+
+                    var embedding = await _embeddingService.GenerateEmbeddingAsync("Hello World");
+                    Debug.WriteLine($"Embedding Size: {embedding.Count}");
 
                     if (embedding == null || embedding.Count == 0)
                         throw new Exception("Embedding Failed");

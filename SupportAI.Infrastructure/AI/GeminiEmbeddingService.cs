@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using SupportAI.Application.Interfaces;
+using SupportAI.Infrastructure.AI.Models;
 using UglyToad.PdfPig.Graphics.Colors;
 
 namespace SupportAI.Infrastructure.AI
 {
     public class GeminiEmbeddingService : IEmbeddingService
     {
+        private readonly HttpClient _httpClient;
+        private readonly string _apiKey;
+
+        public GeminiEmbeddingService(HttpClient httpClient, IConfiguration configuration)
+        {
+            _httpClient = httpClient;
+            _apiKey = configuration["Gemini:ApiKey"];
+        }
+
         public async Task<List<float>> GenerateEmbeddingAsync(List<string> text)
         {
             var random = new Random();
@@ -25,6 +37,46 @@ namespace SupportAI.Infrastructure.AI
                             return (float)Math.Round(shiftedValue, 3);
                         })
                         .ToList();
+        }
+
+        public async Task<List<float>> GenerateEmbeddingAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                throw new Exception("Text is empty");
+
+            var requestBody = new
+            {
+                model = "models/embedding-001",
+                content = new
+                {
+                    parts = new[]
+                    {
+                        new {text = text}
+                    }
+                }
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(
+                $"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={_apiKey}",
+                requestBody
+            );
+
+            var responseText = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Gemini Embedding Error: {responseText}");
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<GeminiEmbeddingResponse>();
+
+            var values = result?.embedding?.values;
+
+            if (values == null || values.Count == 0)
+                throw new Exception("Invalid Embedding response");
+
+            return values;
+
         }
     }
 }
