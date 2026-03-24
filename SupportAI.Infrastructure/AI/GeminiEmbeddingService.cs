@@ -42,24 +42,24 @@ namespace SupportAI.Infrastructure.AI
         public async Task<List<float>> GenerateEmbeddingAsync(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
-                throw new Exception("Text is empty");
+                throw new ArgumentException("Text cannot be empty", nameof(text));
+
+            // Update model Id
+            const string modelId = "gemini-embedding-001";
 
             var requestBody = new
             {
-                model = "models/embedding-001",
+                model = $"models/{modelId}",
                 content = new
                 {
-                    parts = new[]
-                    {
-                        new {text = text}
-                    }
-                }
+                    parts = new[] { new { text = text } }
+                },
+                outputDimensionality = 768,
             };
 
-            var response = await _httpClient.PostAsJsonAsync(
-                $"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={_apiKey}",
-                requestBody
-            );
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelId}:embedContent?key={_apiKey}";
+
+            var response = await _httpClient.PostAsJsonAsync(url, requestBody);
 
             var responseText = await response.Content.ReadAsStringAsync();
 
@@ -67,16 +67,16 @@ namespace SupportAI.Infrastructure.AI
             {
                 throw new Exception($"Gemini Embedding Error: {responseText}");
             }
+            
 
             var result = await response.Content.ReadFromJsonAsync<GeminiEmbeddingResponse>();
 
             var values = result?.embedding?.values;
 
             if (values == null || values.Count == 0)
-                throw new Exception("Invalid Embedding response");
+                throw new Exception("Invalid Embedding response: No value returned");
 
             return values;
-
         }
     }
 }
