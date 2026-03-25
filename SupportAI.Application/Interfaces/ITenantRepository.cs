@@ -10,6 +10,6 @@ namespace SupportAI.Application.Interfaces
     public interface ITenantRepository
     {
         Task AddAsync(Tenant tenant);
-        Task<Guid?> GetTenantIdAsync(string tenantName);
+        Task<Guid> GetTenantIdAsync(string tenantName);
     }
 }

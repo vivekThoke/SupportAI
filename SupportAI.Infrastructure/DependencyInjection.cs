@@ -39,6 +39,7 @@ namespace SupportAI.Infrastructure
             services.AddHostedService<DocumentProcessingService>();
             services.AddHttpClient<IEmbeddingService, GeminiEmbeddingService>();
             services.AddScoped<IVectorDatabase, QdrantService>();
+            services.AddScoped<IChatService, GeminiChatService>();
 
 
 

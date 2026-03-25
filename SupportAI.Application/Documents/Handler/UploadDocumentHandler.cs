@@ -37,7 +37,7 @@ namespace SupportAI.Application.Documents.Handler
                                         command.FileName);
 
             // Create a new document entity
-            var document = new Document(tenantId.Value,
+            var document = new Document(tenantId,
                                 command.FileName,
                                 filePath);
 

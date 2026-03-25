@@ -26,7 +26,7 @@ namespace SupportAI.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Guid?> GetTenantIdAsync(string tenantName)
+        public async Task<Guid> GetTenantIdAsync(string tenantName)
         {
             return await dbContext.Tenants
                 .Where(t => t.Name == tenantName)
