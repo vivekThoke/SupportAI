@@ -16,5 +16,10 @@ namespace SupportAI.Application.Interfaces
             );
 
         Task EnsureCollectionExists();
+
+        Task<List<string>> SearchAsync(
+            List<float> embedding,
+            Guid tenantId,
+            int topK = 5);
     }
 }

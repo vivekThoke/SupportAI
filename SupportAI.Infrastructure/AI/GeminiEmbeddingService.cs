@@ -44,6 +44,8 @@ namespace SupportAI.Infrastructure.AI
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("Text cannot be empty", nameof(text));
 
+            var envKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+
             // Update model Id
             const string modelId = "gemini-embedding-001";
 

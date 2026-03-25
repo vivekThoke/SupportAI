@@ -61,9 +61,10 @@ namespace SupportAI.Infrastructure.Processing
 
                     await Task.Delay(100);
 
-                    //var embedding = await _embeddingService.GenerateEmbeddingAsync(chunk);
 
-                    var embedding = await _embeddingService.GenerateEmbeddingAsync("Hello World");
+                    //var embedding = await _embeddingService.GenerateEmbeddingAsync("Hello World"); - Included for testing purpose
+                    var embedding = await _embeddingService.GenerateEmbeddingAsync(chunk);
+
                     Debug.WriteLine($"Embedding Size: {embedding.Count}");
 
                     if (embedding == null || embedding.Count == 0)
