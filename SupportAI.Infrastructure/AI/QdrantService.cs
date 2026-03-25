@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SupportAI.Application.Interfaces;
 
@@ -53,6 +54,65 @@ namespace SupportAI.Infrastructure.AI
             }
 
             return id;
+        }
+
+        public async Task<List<string>> SearchAsync(
+            List<float> embedding,
+            Guid tenantId,
+            int topK = 5)
+        {
+            var vector = embedding.Select(x => (double)x).ToList();
+
+            var request = new
+            {
+                vector = vector,
+                limit = topK,
+                filter = new
+                {
+                    must = new[]
+                    {
+                        new
+                        {
+                            key = "tenantId",
+                            match = new
+                            {
+                                value = tenantId.ToString()
+                            }
+                        }
+                    }
+                }
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(
+                                        "http://localhost:6333/collections/documents/points/search",
+                                        request);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(json);
+            }
+
+            var result = JsonDocument.Parse(json);
+
+            var match = result.RootElement
+                            .GetProperty("result")
+                            .EnumerateArray();
+
+            var contents = new List<string>();
+
+            foreach (var item in match)
+            {
+                var content = item
+                            .GetProperty("payload")
+                            .GetProperty("content")
+                            .GetString();
+
+                contents.Add(content);
+            }
+
+            return contents;
         }
 
         public async Task EnsureCollectionExists()
