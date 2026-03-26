@@ -67,6 +67,7 @@ namespace SupportAI.Infrastructure.AI
             {
                 vector = vector,
                 limit = topK,
+                with_payload = true,
                 filter = new
                 {
                     must = new[]
@@ -104,12 +105,18 @@ namespace SupportAI.Infrastructure.AI
 
             foreach (var item in match)
             {
-                var content = item
-                            .GetProperty("payload")
-                            .GetProperty("content")
-                            .GetString();
+                if (!item.TryGetProperty("payload", out var payload))
+                    continue;
 
-                contents.Add(content);
+                if (!payload.TryGetProperty("content", out var contentElement))
+                    continue;
+
+                var content = contentElement.GetString();
+
+                if (!string.IsNullOrEmpty(content))
+                {
+                    contents.Add(content);
+                }
             }
 
             return contents;

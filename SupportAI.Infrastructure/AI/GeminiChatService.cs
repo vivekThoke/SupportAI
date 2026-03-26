@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using SupportAI.Application.Interfaces;
 
@@ -52,7 +53,7 @@ namespace SupportAI.Infrastructure.AI
             };
 
             var response = await _httpClient.PostAsJsonAsync(
-                                            $"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={_apiKey}",
+                                            $"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={_apiKey}",
                                             request);
 
             var json = await response.Content.ReadAsStringAsync();
