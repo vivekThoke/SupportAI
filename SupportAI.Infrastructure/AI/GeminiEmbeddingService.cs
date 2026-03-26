@@ -20,6 +20,7 @@ namespace SupportAI.Infrastructure.AI
         {
             _httpClient = httpClient;
             _apiKey = configuration["Gemini:ApiKey"];
+            //_apiKey = configuration["GEMINI_API_KEY"];
         }
 
         public async Task<List<float>> GenerateEmbeddingAsync(List<string> text)
@@ -44,7 +45,7 @@ namespace SupportAI.Infrastructure.AI
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentException("Text cannot be empty", nameof(text));
 
-            var envKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            //var envKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
 
             // Update model Id
             const string modelId = "gemini-embedding-001";

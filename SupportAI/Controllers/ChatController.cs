@@ -16,8 +16,13 @@ namespace SupportAI.API.Controllers
         }
 
         [HttpPost("ask")]
-        public async Task<IActionResult> Ask([FromBody] string question, string tenantName)
+        public async Task<IActionResult> Ask([FromBody] string question)
         {
+            var tenantName = Request.Headers["X-Tenant-Name"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(tenantName))
+                return BadRequest("Tenant header is missing");
+
             var result = await _mediator.Send(new AskQuestionQuery(question, tenantName));
 
             return Ok(new { answer = result });

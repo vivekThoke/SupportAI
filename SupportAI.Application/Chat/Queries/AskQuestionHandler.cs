@@ -32,7 +32,7 @@ namespace SupportAI.Application.Chat.Queries
             var chunks = await _vectorDatabase.SearchAsync(embedding, tenantId, 5);
 
             if (!chunks.Any())
-                return "No relevant inforamtion found";
+                return "No relevant information found";
 
             var answer = await _chatService.AskAsync(request.question, chunks);
 
