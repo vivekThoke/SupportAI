@@ -11,4 +11,4 @@ const Upload = () => {
   return <input type='file' onChange={handleUpload}/>
 }
 
-export default Upload
+export default Upload;
