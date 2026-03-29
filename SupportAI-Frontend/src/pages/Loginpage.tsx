@@ -12,7 +12,7 @@ export const Loginpage = () => {
     };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center bg-gray-900">
         <div className="p-6 border rounded w-80">
             <input 
                 className="w-full mb-2 p-2 border"
@@ -30,7 +30,10 @@ export const Loginpage = () => {
                 onClick={handleLogin}>
                     Login
             </button>
+
+            <p className="text-center">New User <a href="/register" className='text-blue-700'>Register</a></p>
         </div>
+
     </div>
   )
 }
