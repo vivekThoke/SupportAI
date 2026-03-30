@@ -16,43 +16,49 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-            <div className="w-full max-w-sm bg-neutral-900 p-8 rounded-2xl border border-neutral-800">
-                <h1 className="text-2xl font-bold mb-6 text-center">Create Account</h1>
+        <div className="relative min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-4 overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 blur-[120px] rounded-full"></div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Tenant Name */}
+            <div className="relative z-10 w-full max-w-sm p-8 bg-[#121212] border border-white/10 rounded-2xl shadow-2xl">
+                <div className="mb-8 text-center">
+                    <h1 className="text-2xl font-bold tracking-tight">Create Account</h1>
+                    <p className="text-sm text-gray-400 mt-2">Start your 14-day free trial today.</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Company Name */}
                     <div>
-                        <label className="block text-sm mb-1 text-neutral-400">Company Name</label>
+                        <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Company Name</label>
                         <input
                             type="text"
                             required
-                            className="w-full bg-black border border-neutral-700 rounded-lg p-2.5 focus:outline-none focus:border-blue-500"
                             placeholder="Your Workspace"
+                            className="w-full p-3 bg-[#1a1a1a] border border-white/5 rounded-lg focus:outline-none focus:border-violet-500 transition-colors placeholder:text-gray-600"
                             onChange={(e) => setFormData({ ...formData, tenantName: e.target.value })}
                         />
                     </div>
 
                     {/* Email */}
                     <div>
-                        <label className="block text-sm mb-1 text-neutral-400">Email Address</label>
+                        <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Email Address</label>
                         <input
                             type="email"
                             required
-                            className="w-full bg-black border border-neutral-700 rounded-lg p-2.5 focus:outline-none focus:border-blue-500"
                             placeholder="name@company.com"
+                            className="w-full p-3 bg-[#1a1a1a] border border-white/5 rounded-lg focus:outline-none focus:border-violet-500 transition-colors placeholder:text-gray-600"
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                     </div>
 
                     {/* Password */}
                     <div>
-                        <label className="block text-sm mb-1 text-neutral-400">Password</label>
+                        <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Password</label>
                         <input
                             type="password"
                             required
-                            className="w-full bg-black border border-neutral-700 rounded-lg p-2.5 focus:outline-none focus:border-blue-500"
                             placeholder="••••••••"
+                            className="w-full p-3 bg-[#1a1a1a] border border-white/5 rounded-lg focus:outline-none focus:border-violet-500 transition-colors placeholder:text-gray-600"
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
                     </div>
@@ -60,15 +66,18 @@ const RegisterPage = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-white text-black font-bold py-2.5 rounded-lg mt-4 hover:bg-neutral-200 transition-colors"
+                        className="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition-all active:scale-[0.98] mt-2"
                     >
-                        Register
+                        Get Started
                     </button>
                 </form>
 
-                <p className="text-center text-xs text-neutral-500 mt-6">
-                    By signing up, you agree to our Terms of Service.
-                </p>
+                <div className="mt-8 pt-6 border-t border-white/5 text-center">
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                        By signing up, you agree to our <br />
+                        <a href="#" className="underline hover:text-gray-300">Terms of Service</a> and <a href="#" className="underline hover:text-gray-300">Privacy Policy</a>.
+                    </p>
+                </div>
             </div>
         </div>
     );
