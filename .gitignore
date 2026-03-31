@@ -87,3 +87,4 @@ Desktop.ini
 # Exclude appsettings from the general json ignore
 !appsettings.json
 !appsettings.*.json
+/SupportAI/appsettings.json

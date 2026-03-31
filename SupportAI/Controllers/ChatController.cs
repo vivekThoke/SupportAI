@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SupportAI.Application.Auth.DTOs;
 using SupportAI.Application.Chat.Queries;
 
 namespace SupportAI.API.Controllers
@@ -16,14 +17,14 @@ namespace SupportAI.API.Controllers
         }
 
         [HttpPost("ask")]
-        public async Task<IActionResult> Ask([FromBody] string question)
+        public async Task<IActionResult> Ask([FromBody] AskRequest request)
         {
             var tenantName = Request.Headers["X-Tenant-Name"].FirstOrDefault();
 
             if (string.IsNullOrEmpty(tenantName))
                 return BadRequest("Tenant header is missing");
 
-            var result = await _mediator.Send(new AskQuestionQuery(question, tenantName));
+            var result = await _mediator.Send(new AskQuestionQuery(request.Question, tenantName));
 
             return Ok(new { answer = result });
         }
