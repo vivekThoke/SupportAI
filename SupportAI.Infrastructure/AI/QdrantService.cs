@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using SupportAI.Application.Interfaces;
 
 namespace SupportAI.Infrastructure.AI
@@ -12,10 +13,12 @@ namespace SupportAI.Infrastructure.AI
     public class QdrantService : IVectorDatabase
     {
         private readonly HttpClient _httpClient;
+        private readonly string _baseUrl;
 
-        public QdrantService(HttpClient httpClient)
+        public QdrantService(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
+            _baseUrl = config["Qdrant:Url"];
         }
 
         public async Task<string> UpsertAsync(
@@ -45,7 +48,7 @@ namespace SupportAI.Infrastructure.AI
                 }
             };
 
-            var response = await _httpClient.PutAsJsonAsync("http://localhost:6333/collections/documents/points?wait=true", payload);
+            var response = await _httpClient.PutAsJsonAsync($"{_baseUrl}/collections/documents/points?wait=true", payload);
 
             if (!response.IsSuccessStatusCode)
             {
