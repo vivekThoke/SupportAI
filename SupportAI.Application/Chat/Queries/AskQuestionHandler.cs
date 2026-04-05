@@ -29,7 +29,7 @@ namespace SupportAI.Application.Chat.Queries
 
             var embedding = await _embeddingService.GenerateEmbeddingAsync(request.question);
 
-            var chunks = await _vectorDatabase.SearchAsync(embedding, tenantId, 5);
+            var chunks = await _vectorDatabase.SearchAsync(embedding, tenantId, 20);
 
             if (!chunks.Any())
                 return "No relevant information found";
