@@ -34,6 +34,7 @@ namespace SupportAI.Application.Chat.Queries
             if (!chunks.Any())
                 return "No relevant information found";
 
+
             var answer = await _chatService.AskAsync(request.question, chunks);
 
             return answer;
