@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.VisualBasic;
 using SupportAI.Application.Interfaces;
 
 namespace SupportAI.Application.Chat.Queries
@@ -14,6 +15,7 @@ namespace SupportAI.Application.Chat.Queries
         private readonly IVectorDatabase _vectorDatabase;
         private readonly IChatService _chatService;
         private readonly ITenantRepository _tenantProvider;
+        private readonly IRerankService _rerankService;
 
         public AskQuestionHandler(IEmbeddingService embeddingService, IVectorDatabase vectorDatabase, IChatService chatService, ITenantRepository tenantProvider)
         {
@@ -34,8 +36,9 @@ namespace SupportAI.Application.Chat.Queries
             if (!chunks.Any())
                 return "No relevant information found";
 
+            var bestChunks = await _rerankService.RerankAsync(request.question, chunks);
 
-            var answer = await _chatService.AskAsync(request.question, chunks);
+            var answer = await _chatService.AskAsync(request.question, bestChunks);
 
             return answer;
         }

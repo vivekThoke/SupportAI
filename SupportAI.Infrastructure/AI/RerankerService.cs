@@ -7,7 +7,7 @@ using SupportAI.Application.Interfaces;
 
 namespace SupportAI.Infrastructure.AI
 {
-    public class RerankerService
+    public class RerankerService : IRerankService
     {
         private readonly IChatService _chatService;
 
