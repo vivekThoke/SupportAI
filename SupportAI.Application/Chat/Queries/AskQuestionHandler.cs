@@ -31,6 +31,7 @@ namespace SupportAI.Application.Chat.Queries
 
             var embedding = await _embeddingService.GenerateEmbeddingAsync(request.question);
 
+            // Moved sevice to railways deployed
             var chunks = await _vectorDatabase.SearchAsync(embedding, tenantId, 20);
 
             if (!chunks.Any())
