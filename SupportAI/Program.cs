@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(RegisterTenantCommand).Assembly));
 
-
+// Dependency Injection
 builder.Services.AddInfrastructure(
     builder.Configuration.GetConnectionString("DefaultConnection"));
 
